@@ -46,6 +46,13 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.OwnViewHolde
     public void onViewRecycled(@NonNull OwnViewHolder holder) {
         super.onViewRecycled(holder);
         //Release Resources
+        holder.unBindData();
+    }
+
+    public void addListTasks(List<Task> tasks){
+        tasks.clear();
+        taskList.addAll(tasks);
+        notifyDataSetChanged();
     }
 
     public static class OwnViewHolder extends RecyclerView.ViewHolder {
@@ -64,7 +71,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.OwnViewHolde
         }
 
         private void unBindData(){
-
+            txtItemTaskTitle.setText(null);
+            txtItemTaskContent.setText(null);
         }
     }
 }
