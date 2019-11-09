@@ -16,7 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mel.mvvmrecyclerview.R;
 import com.mel.mvvmrecyclerview.model.Task;
+import com.mel.mvvmrecyclerview.repository.TaskMapper;
+import com.mel.mvvmrecyclerview.repository.TaskRepository;
 import com.mel.mvvmrecyclerview.ui.adapter.TasksAdapter;
+import com.mel.mvvmrecyclerview.vm.OwnViewModelFactory;
 import com.mel.mvvmrecyclerview.vm.TaskViewModel;
 
 import java.util.ArrayList;
@@ -33,23 +36,24 @@ public class TasksFragment extends Fragment {
     private TaskViewModel taskViewModel;
     private TasksAdapter adapter;
     private List<Task> taskList;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        taskViewModel= ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(TaskViewModel.class);
-        taskViewModel.getAllTasks().observe(this, tasks -> adapter.addListTasks(tasks));
-    }
+    private OwnViewModelFactory ownViewModelFactory;
+    private TaskRepository taskRepository;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_list_tasks, container);
-    }
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        View view=inflater.inflate(R.layout.fragment_list_tasks, container);
         initRecyclerList();
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        taskRepository=new TaskRepository(getContext(),new TaskMapper());
+        ownViewModelFactory=new OwnViewModelFactory(taskRepository);
+        taskViewModel= new ViewModelProvider(getActivity(),ownViewModelFactory).get(TaskViewModel.class);
+        taskViewModel.getAllTasks().observe(getViewLifecycleOwner(), tasks -> adapter.addListTasks(tasks));
     }
 
     private void initRecyclerList(){
@@ -62,7 +66,8 @@ public class TasksFragment extends Fragment {
     }
 
     private void generateDummyList(){
-        String[] titles={"The sky", "above", "the port","was", "the color of television", "tuned", "to", "a dead channel", ".", "All", "this happened", "more or less","." ,"I", "had", "the story", "bit by bit", "from various people", "and", "as generally", "happens", "in such cases", "each time", "it", "was", "a different story","." ,"It", "was", "a pleasure", "to", "burn"};
+        List<Task> dummyList=new ArrayList<>();
+        String[] titles={"The sky", "above", "the port","was", "the color of television", "tuned", "to", "a dead channel",  "All", "this happened", "more or less","I", "had", "the story", "bit by bit", "from various people", "and", "as generally", "happens", "in such cases", "each time", "it", "was", "a different story","It", "was", "a pleasure", "to", "burn"};
         String[] contents={"Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede."
                 ,"Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci. Aenean dignissim pellentesque felis"
                 ,"Morbi in sem quis dui placerat ornare. Pellentesque odio nisi, euismod in, pharetra a, ultricies in, diam. Sed arcu. Cras consequat."
@@ -75,7 +80,11 @@ public class TasksFragment extends Fragment {
             Task task=new Task();
             task.setTitle(titles[random.nextInt(sizeTitles)]);
             task.setContent(contents[random.nextInt(sizeContents)]);
-            taskList.add(task);
+            dummyList.add(task);
         }
+    }
+
+    private void insertDummyListLocal(){
+        
     }
 }
