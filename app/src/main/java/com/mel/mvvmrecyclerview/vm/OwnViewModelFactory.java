@@ -3,20 +3,19 @@ package com.mel.mvvmrecyclerview.vm;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
-import com.mel.mvvmrecyclerview.repository.TaskRepository;
+import com.mel.mvvmrecyclerview.repository.UserRepository;
 
 public class OwnViewModelFactory implements ViewModelProvider.Factory {
-    private final TaskRepository taskRepository;
-    public OwnViewModelFactory(TaskRepository taskRepository){
-        this.taskRepository=taskRepository;
+    private final UserRepository userRepository;
+    public OwnViewModelFactory(UserRepository userRepository){
+        this.userRepository = userRepository;
     }
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(TaskViewModel.class)){
-            return (T) new TaskViewModel(taskRepository);
+        if (modelClass.isAssignableFrom(UserViewModel.class)){
+            return (T) new UserViewModel(userRepository);
         }
         throw new IllegalArgumentException("Unknown Viewmodel class");
     }

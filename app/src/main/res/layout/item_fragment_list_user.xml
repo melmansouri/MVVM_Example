@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:id="@+id/itemView">
+    <ImageView
+        android:id="@+id/imgCheck"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/ic_img_user_default"/>
+
+    <TextView
+        android:id="@+id/txtItemUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/imgCheck"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:text="gga"
+        android:textSize="20dp"/>
+
+    <TextView
+        android:id="@+id/txtItemUserDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="askdgfaksjsgfjgjsadfgasjkfgsjdgfashdgfjsg"
+        app:layout_constraintStart_toEndOf="@+id/imgCheck"
+        app:layout_constraintTop_toBottomOf="@+id/txtItemUserName"
+        android:textSize="15dp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
