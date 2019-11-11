@@ -1,6 +1,10 @@
 package com.mel.mvvmrecyclerview.ui.adapter;
 
+import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -15,14 +19,18 @@ import com.mel.mvvmrecyclerview.model.User;
 
 import java.util.List;
 
+import butterknife.Action;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder> {
     private List<User> userList;
+    private static ActionModeCallback actionMode;
+    private
 
     public UserAdapter(List<User> userList) {
         this.userList = userList;
+        actionMode=new ActionModeCallback();
     }
 
     @NonNull
@@ -68,6 +76,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
         TextView txtItemTaskContent;
         @BindView(R.id.imgCheck)
         ImageView imgCheck;
+        private User user;
 
         public OwnViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -75,15 +84,50 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    imgCheck.setVisibility(View.VISIBLE);
+                    v.startActionMode(actionMode);
+                    if (user.isChecked()){
+                        user.setChecked(false);
+                        imgCheck.setImageResource(R.drawable.ic_img_user_default);
+                    }else{
+                        imgCheck.setImageResource(R.drawable.ic_check_circle);
+                        user.setChecked(true);
+                    }
                     return true;
                 }
             });
         }
 
         private void bindData(User user) {
+            this.user=user;
             txtItemTaskTitle.setText(user.getName());
             txtItemTaskContent.setText(user.getDescription());
+        }
+    }
+
+    private static class ActionModeCallback implements android.view.ActionMode.Callback {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate(R.menu.menu_contextual_action_mode,menu);
+            Log.d("asda","asdfasfd");
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            if (item.getItemId() == R.id.itemMenuDelete){
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mode=null;
         }
     }
 }

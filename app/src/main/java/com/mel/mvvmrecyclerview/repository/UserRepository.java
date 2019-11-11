@@ -51,8 +51,8 @@ public class UserRepository {
                         listaActualUsers) {
                     taskListCloneMoreTheNewUser.add(userLoop);
                 }
-                listMutableLiveData.setValue(taskListCloneMoreTheNewUser);
                 taskListCloneMoreTheNewUser.addAll(userList);
+                listMutableLiveData.setValue(taskListCloneMoreTheNewUser);
             }
         }.execute(userList);
     }
