@@ -41,7 +41,7 @@ public class DiffUtilsCallbackUser extends DiffUtil.Callback {
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
         User oldUser =oldList.get(oldItemPosition);
         User newUser =newList.get(newItemPosition);
-        return oldUser.getName().equals(newUser.getName()) && oldUser.getDescription().equals(newUser.getDescription());
+        return oldUser.getName().equals(newUser.getName()) && oldUser.getDescription().equals(newUser.getDescription()) && oldUser.isChecked()==newUser.isChecked();
     }
 
     /**

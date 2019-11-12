@@ -17,20 +17,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mel.mvvmrecyclerview.R;
 import com.mel.mvvmrecyclerview.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Action;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder> {
     private List<User> userList;
-    private static ActionModeCallback actionMode;
-    private
+    private ActionModeCallback actionModeCallback;
+    private ActionMode actionMode;
+    private List<User> listUsersSelected;
+    private boolean selectionEnabled;
 
     public UserAdapter(List<User> userList) {
         this.userList = userList;
-        actionMode=new ActionModeCallback();
+        listUsersSelected=new ArrayList<>();
+        actionModeCallback=new ActionModeCallback();
     }
 
     @NonNull
@@ -44,6 +47,55 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
     public void onBindViewHolder(@NonNull OwnViewHolder holder, int position) {
         User user = userList.get(position);
         holder.bindData(user);
+        holder.view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (actionMode==null){
+                    actionMode=v.startActionMode(actionModeCallback);
+                }
+                selectionEnabled=true;
+                manageSelection(holder,user);
+                return true;
+            }
+        });
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectionEnabled){
+                    manageSelection(holder,user);
+                }
+            }
+        });
+        if (!user.isChecked()){
+            holder.imgCheck.setImageResource(R.drawable.ic_check_circle);
+        }
+    }
+
+    private void manageSelection(OwnViewHolder holder,User user){
+        if (user.isChecked()){
+            user.setChecked(false);
+            holder.imgCheck.setImageResource(R.drawable.ic_img_user_default);
+            if (listUsersSelected.contains(user)){
+                listUsersSelected.remove(user);
+            }
+        }else{
+            holder.imgCheck.setImageResource(R.drawable.ic_check_circle);
+            user.setChecked(true);
+            listUsersSelected.add(user);
+        }
+
+        if (listUsersSelected.size()==0){
+            actionMode.finish();
+        }
+        actionMode.setTitle(listUsersSelected.size()+"");
+    }
+
+    private void clearListSelected(){
+        for (User user:listUsersSelected){
+            int position=userList.indexOf(user);
+            userList.get(position).setChecked(false);
+        }
+        //Use diffutil with payload to refresh list without element selected
     }
 
     /**
@@ -77,24 +129,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
         @BindView(R.id.imgCheck)
         ImageView imgCheck;
         private User user;
+        View view;
 
         public OwnViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    v.startActionMode(actionMode);
-                    if (user.isChecked()){
-                        user.setChecked(false);
-                        imgCheck.setImageResource(R.drawable.ic_img_user_default);
-                    }else{
-                        imgCheck.setImageResource(R.drawable.ic_check_circle);
-                        user.setChecked(true);
-                    }
-                    return true;
-                }
-            });
+            view=itemView;
         }
 
         private void bindData(User user) {
@@ -104,7 +144,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
         }
     }
 
-    private static class ActionModeCallback implements android.view.ActionMode.Callback {
+    private class ActionModeCallback implements android.view.ActionMode.Callback {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             mode.getMenuInflater().inflate(R.menu.menu_contextual_action_mode,menu);
@@ -127,7 +167,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
 
         @Override
         public void onDestroyActionMode(ActionMode mode) {
-            mode=null;
+            actionMode=null;
+            selectionEnabled=false;
         }
     }
 }
