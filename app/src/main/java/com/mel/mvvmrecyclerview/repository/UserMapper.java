@@ -7,16 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserMapper {
-    public UserEntity convertTaskToTAskEntity(User user) {
+    public UserEntity convertUserToTAskEntity(User user) {
         UserEntity userEntity =new UserEntity();
         userEntity.setName(user.getName());
         userEntity.setDescription(user.getDescription());
         return userEntity;
     }
 
-    public List<User> convertTaskEntityListToTaskList(List<UserEntity> aLlTasks) {
+    public List<User> convertUserEntityListToUserList(List<UserEntity> aLlUsers) {
         List<User> users =new ArrayList<>();
-        for (UserEntity userEntity :aLlTasks){
+        for (UserEntity userEntity :aLlUsers){
             User user =new User();
             user.setId(userEntity.getId());
             user.setDescription(userEntity.getDescription());
@@ -25,7 +25,7 @@ public class UserMapper {
         }
         return users;
     }
-    public List<UserEntity> convertTaskListToTaskEntityList(List<User> aLlUsers) {
+    public List<UserEntity> convertUserListToUserEntityList(List<User> aLlUsers) {
         List<UserEntity> tasks=new ArrayList<>();
         for (User user : aLlUsers){
             UserEntity userEntity =new UserEntity();

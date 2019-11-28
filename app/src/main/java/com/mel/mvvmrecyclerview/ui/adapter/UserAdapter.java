@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mel.mvvmrecyclerview.R;
 import com.mel.mvvmrecyclerview.model.User;
+import com.mel.mvvmrecyclerview.vm.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +30,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
     private ActionMode actionMode;
     private List<User> listUsersSelected;
     private boolean selectionEnabled;
+    private UserViewModel userViewModel;
 
-    public UserAdapter(List<User> userList) {
+    public UserAdapter(List<User> userList, UserViewModel viewModel) {
         this.userList = userList;
         listUsersSelected=new ArrayList<>();
         actionModeCallback=new ActionModeCallback();
+        userViewModel=viewModel;
     }
 
     @NonNull
@@ -66,28 +69,27 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
                 }
             }
         });
-        if (!user.isChecked()){
+        //No quiero voy a comprobar si esta seleccionado o no.
+        /*if (!user.isChecked()){
             holder.imgCheck.setImageResource(R.drawable.ic_check_circle);
-        }
+        }*/
     }
 
     private void manageSelection(OwnViewHolder holder,User user){
-        if (user.isChecked()){
-            user.setChecked(false);
+        if (listUsersSelected.contains(user)){
             holder.imgCheck.setImageResource(R.drawable.ic_img_user_default);
-            if (listUsersSelected.contains(user)){
-                listUsersSelected.remove(user);
-            }
+            listUsersSelected.remove(user);
         }else{
             holder.imgCheck.setImageResource(R.drawable.ic_check_circle);
-            user.setChecked(true);
             listUsersSelected.add(user);
         }
 
         if (listUsersSelected.size()==0){
             actionMode.finish();
         }
-        actionMode.setTitle(listUsersSelected.size()+"");
+        if (actionMode!=null){
+            actionMode.setTitle(listUsersSelected.size()+"");
+        }
     }
 
     private void clearListSelected(){
@@ -114,7 +116,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
         return userList.size();
     }
 
-    public void addListTasks(List<User> newList) {
+    public void addListUsers(List<User> newList) {
         DiffUtil.DiffResult diffResult=DiffUtil.calculateDiff(new DiffUtilsCallbackUser(userList,newList));
         userList.clear();
         userList.addAll(newList);
@@ -123,9 +125,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
 
     public static class OwnViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.txtItemUserName)
-        TextView txtItemTaskTitle;
+        TextView txtItemUserTitle;
         @BindView(R.id.txtItemUserDescription)
-        TextView txtItemTaskContent;
+        TextView txtItemUserContent;
         @BindView(R.id.imgCheck)
         ImageView imgCheck;
         private User user;
@@ -139,8 +141,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
 
         private void bindData(User user) {
             this.user=user;
-            txtItemTaskTitle.setText(user.getName());
-            txtItemTaskContent.setText(user.getDescription());
+            txtItemUserTitle.setText(user.getName());
+            txtItemUserContent.setText(user.getDescription());
         }
     }
 
@@ -160,6 +162,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             if (item.getItemId() == R.id.itemMenuDelete){
+                userViewModel.deleteListUsers(listUsersSelected);
+                mode.finish();
                 return true;
             }
             return false;
@@ -169,6 +173,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
         public void onDestroyActionMode(ActionMode mode) {
             actionMode=null;
             selectionEnabled=false;
+            clearListSelected();
         }
     }
 }

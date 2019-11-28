@@ -16,14 +16,18 @@ public class UserViewModel extends ViewModel{
     public UserViewModel(UserRepository userRepository) {
         this.userRepository = userRepository;
         liveListUsers =new MutableLiveData<>();
-        liveListUsers = userRepository.getAllTasks();
+        liveListUsers = userRepository.getAllUsers();
     }
 
-    public LiveData<List<User>> getAllTasks(){
+    public LiveData<List<User>> getAllUsers(){
         return liveListUsers;
     }
 
-    public void insertListTasks(List<User> userList){
-        userRepository.insertListTasks(userList);
+    public void insertListUsers(List<User> userList){
+        userRepository.insertListUsers(userList);
+    }
+
+    public void deleteListUsers(List<User> listUsers){
+        userRepository.deleteListUsers(listUsers);
     }
 }

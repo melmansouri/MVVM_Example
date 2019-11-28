@@ -16,8 +16,11 @@ public interface UserDAO {
     List<Long> insertAll(List<UserEntity> userEntityList);
 
     @Query("Select * from User")
-    List<UserEntity> getALlTasks();
+    List<UserEntity> getALlUsers();
 
     @Delete
-    void deleteTask(UserEntity task);
+    void deleteUser(UserEntity task);
+
+    @Delete
+    void deleteListUsers(List<UserEntity> task);
 }

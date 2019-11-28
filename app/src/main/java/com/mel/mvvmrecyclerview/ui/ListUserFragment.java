@@ -33,7 +33,7 @@ import butterknife.OnClick;
 public class ListUserFragment extends Fragment {
 
     @BindView(R.id.RecyclerViewUsers)
-    RecyclerView recyclerViewTask;
+    RecyclerView recyclerViewUser;
     private UserViewModel userViewModel;
     private UserAdapter adapter;
     private List<User> userList;
@@ -61,21 +61,21 @@ public class ListUserFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        userViewModel.getAllTasks().observe(getViewLifecycleOwner(), new Observer<List<User>>() {
+        userViewModel.getAllUsers().observe(getViewLifecycleOwner(), new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> newList) {
-                adapter.addListTasks(newList);
-                recyclerViewTask.scrollToPosition(newList.size()-1);
+                adapter.addListUsers(newList);
+                recyclerViewUser.scrollToPosition(newList.size()-1);
             }
         });
     }
 
     private void initRecyclerList() {
-        recyclerViewTask.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerViewTask.setHasFixedSize(true);
-        recyclerViewTask.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL));
-        adapter = new UserAdapter(userList);
-        recyclerViewTask.setAdapter(adapter);
+        recyclerViewUser.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerViewUser.setHasFixedSize(true);
+        recyclerViewUser.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL));
+        adapter = new UserAdapter(userList,userViewModel);
+        recyclerViewUser.setAdapter(adapter);
     }
 
     private List<User> generateDummyList() {
@@ -100,7 +100,7 @@ public class ListUserFragment extends Fragment {
 
     @OnClick(R.id.fabAddUser)
     public void insertAllDummyList(){
-        userViewModel.insertListTasks(generateDummyList());
+        userViewModel.insertListUsers(generateDummyList());
     }
 
 
