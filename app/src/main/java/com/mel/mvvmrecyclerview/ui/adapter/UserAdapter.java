@@ -93,10 +93,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
     }
 
     private void clearListSelected(){
-        for (User user:listUsersSelected){
-            int position=userList.indexOf(user);
-            userList.get(position).setChecked(false);
-        }
+        listUsersSelected.clear();
         //Use diffutil with payload to refresh list without element selected
     }
 
@@ -163,6 +160,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             if (item.getItemId() == R.id.itemMenuDelete){
                 userViewModel.deleteListUsers(listUsersSelected);
+                //listUsersSelected.clear();
                 mode.finish();
                 return true;
             }
