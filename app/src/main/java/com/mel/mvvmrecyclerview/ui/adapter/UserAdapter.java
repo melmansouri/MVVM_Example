@@ -31,12 +31,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
     private List<User> listUsersSelected;
     private boolean selectionEnabled;
     private UserViewModel userViewModel;
+    private boolean elementsDeleted=false;
+    private List<OwnViewHolder> ownViewHolderList;
 
     public UserAdapter(List<User> userList, UserViewModel viewModel) {
         this.userList = userList;
         listUsersSelected=new ArrayList<>();
         actionModeCallback=new ActionModeCallback();
         userViewModel=viewModel;
+        ownViewHolderList=new ArrayList<>();
     }
 
     @NonNull
@@ -50,13 +53,19 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
     public void onBindViewHolder(@NonNull OwnViewHolder holder, int position) {
         User user = userList.get(position);
         holder.bindData(user);
+        holder.imgCheck.setImageResource(R.drawable.ic_img_user_default);
         holder.view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 if (actionMode==null){
+                    clearListSelected();
                     actionMode=v.startActionMode(actionModeCallback);
                 }
                 selectionEnabled=true;
+                if (!ownViewHolderList.contains(holder)){
+                    ownViewHolderList.add(holder);
+                }
+                actionMode.setTag(ownViewHolderList);
                 manageSelection(holder,user);
                 return true;
             }
@@ -67,12 +76,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
                 if (selectionEnabled){
                     manageSelection(holder,user);
                 }
+                if (!ownViewHolderList.contains(holder)){
+                    ownViewHolderList.add(holder);
+                }
+                actionMode.setTag(ownViewHolderList);
             }
         });
-        //No quiero voy a comprobar si esta seleccionado o no.
-        /*if (!user.isChecked()){
-            holder.imgCheck.setImageResource(R.drawable.ic_check_circle);
-        }*/
     }
 
     private void manageSelection(OwnViewHolder holder,User user){
@@ -94,7 +103,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
 
     private void clearListSelected(){
         listUsersSelected.clear();
-        //Use diffutil with payload to refresh list without element selected
     }
 
     /**
@@ -147,7 +155,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             mode.getMenuInflater().inflate(R.menu.menu_contextual_action_mode,menu);
-            Log.d("asda","asdfasfd");
             return true;
         }
 
@@ -160,7 +167,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             if (item.getItemId() == R.id.itemMenuDelete){
                 userViewModel.deleteListUsers(listUsersSelected);
-                //listUsersSelected.clear();
+                elementsDeleted=true;
                 mode.finish();
                 return true;
             }
@@ -171,7 +178,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.OwnViewHolder>
         public void onDestroyActionMode(ActionMode mode) {
             actionMode=null;
             selectionEnabled=false;
-            clearListSelected();
+            if (!elementsDeleted){
+                List<OwnViewHolder> list= (List<OwnViewHolder>) mode.getTag();
+                for (OwnViewHolder ownViewHolder :
+                        list) {
+                    ownViewHolder.imgCheck.setImageResource(R.drawable.ic_img_user_default);
+                }
+                clearListSelected();
+            }
         }
     }
 }

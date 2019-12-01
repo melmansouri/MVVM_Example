@@ -29,6 +29,7 @@ public class UserMapper {
         List<UserEntity> tasks=new ArrayList<>();
         for (User user : aLlUsers){
             UserEntity userEntity =new UserEntity();
+            userEntity.setId(user.getId());
             userEntity.setDescription(user.getDescription());
             userEntity.setName(user.getName());
             tasks.add(userEntity);

@@ -1,7 +1,10 @@
 package com.mel.mvvmrecyclerview.ui;
 
 import android.os.Bundle;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -30,7 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ListUserFragment extends Fragment {
+public class ListUserFragment extends Fragment/* implements android.view.ActionMode.Callback*/{
 
     @BindView(R.id.RecyclerViewUsers)
     RecyclerView recyclerViewUser;
@@ -65,7 +68,6 @@ public class ListUserFragment extends Fragment {
             @Override
             public void onChanged(List<User> newList) {
                 adapter.addListUsers(newList);
-                recyclerViewUser.scrollToPosition(newList.size()-1);
             }
         });
     }
@@ -104,4 +106,30 @@ public class ListUserFragment extends Fragment {
     }
 
 
+    /*@Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        mode.getMenuInflater().inflate(R.menu.menu_contextual_action_mode,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        if (item.getItemId() == R.id.itemMenuDelete){
+            userViewModel.deleteListUsers(listUsersSelected);
+            removeSelectedUsers();
+            mode.finish();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+
+    }*/
 }
