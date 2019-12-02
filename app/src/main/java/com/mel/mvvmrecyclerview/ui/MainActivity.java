@@ -1,10 +1,13 @@
 package com.mel.mvvmrecyclerview.ui;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.mel.mvvmrecyclerview.R;
@@ -15,6 +18,7 @@ import com.mel.mvvmrecyclerview.vm.UserViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,5 +44,17 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager.beginTransaction().add(R.id.container,fragment).commit();
     }
 
+    @OnClick(R.id.fabAddUser)
+    public void createNewUser(){
+        FragmentManager fragmentManager=getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
+        Fragment fragment=fragmentManager.findFragmentByTag("dialog");
+        if (fragment!=null){
+            fragmentTransaction.remove(fragment);
+        }
+        fragmentTransaction.addToBackStack(null);
+        DialogAddUserFragment dialogAddUserFragment=new DialogAddUserFragment();
+        dialogAddUserFragment.show(fragmentTransaction,"dialog");
+    }
 
 }

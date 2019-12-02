@@ -25,8 +25,14 @@ import com.mel.mvvmrecyclerview.vm.UserViewModel;
 
 import java.util.Objects;
 
-public class AddUserFragment extends DialogFragment {
+import butterknife.BindView;
 
+public class DialogAddUserFragment extends DialogFragment {
+
+    @BindView(R.id.edtName)
+    EditText edtName;
+    @BindView(R.id.edtDescription)
+    EditText edtDescription;
     private UserViewModel userViewModel;
     private ViewModelProvider.Factory ownViewModelFactory;
     private UserRepository userRepository;
@@ -41,13 +47,21 @@ public class AddUserFragment extends DialogFragment {
         userViewModel = new ViewModelProvider(requireActivity(), ownViewModelFactory).get(UserViewModel.class);
     }
 
+    @Nullable
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.dialog_fragment_add_user, container, false);
+
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         userViewModel.getCheckDataSingleEvemt().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                Toast.makeText(getActivity(),s,Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -55,17 +69,17 @@ public class AddUserFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        AlertDialog.Builder builder=new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
-        LayoutInflater inflater=requireActivity().getLayoutInflater();
-        View view=inflater.inflate(R.layout.dialog_fragment_add_user,null);
-        edtNombre=view.findViewById(R.id.edtName);
-        edtDescripcion=view.findViewById(R.id.edtDescription);
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_fragment_add_user, null);
+        edtNombre = view.findViewById(R.id.edtName);
+        edtDescripcion = view.findViewById(R.id.edtDescription);
         builder.setView(view)
                 .setTitle("Añadir usuario")
                 .setPositiveButton("Añadir", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        User user=new User();
+                        User user = new User();
                         user.setName(edtNombre.getText().toString());
                         user.setDescription(edtDescripcion.getText().toString());
                         userViewModel.insertUser(user);
