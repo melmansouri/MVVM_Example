@@ -101,35 +101,8 @@ public class ListUserFragment extends Fragment/* implements android.view.ActionM
     }
 
     @OnClick(R.id.fabAddUser)
-    public void insertAllDummyList(){
-        userViewModel.insertListUsers(generateDummyList());
+    public void createNewUser(){
+
     }
 
-
-    /*@Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        mode.getMenuInflater().inflate(R.menu.menu_contextual_action_mode,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        return false;
-    }
-
-    @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        if (item.getItemId() == R.id.itemMenuDelete){
-            userViewModel.deleteListUsers(listUsersSelected);
-            removeSelectedUsers();
-            mode.finish();
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode mode) {
-
-    }*/
 }

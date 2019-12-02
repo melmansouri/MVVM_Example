@@ -29,12 +29,12 @@ public class UserRepository {
                 super.onPostExecute(user);
 
                 List<User> taskListCloneMoreTheNewUser =new ArrayList<>();
-                taskListCloneMoreTheNewUser.add(user);
                 List<User> listaActualUsers =listMutableLiveData.getValue();
                 for (User userLoop :
                         listaActualUsers) {
                     taskListCloneMoreTheNewUser.add(userLoop);
                 }
+                taskListCloneMoreTheNewUser.add(user);
                 listMutableLiveData.setValue(taskListCloneMoreTheNewUser);
             }
         }.execute(user);
