@@ -13,12 +13,14 @@ import java.util.List;
 public class UserViewModel extends ViewModel{
     private LiveData<List<User>> liveListUsers;
     private UserRepository userRepository;
-    private SingleLiveEvent<String> singleLiveEvent;
+    private SingleLiveEvent<String> singleLiveEventErrorEmptyFields;
+    private SingleLiveEvent singleLiveEventAllOperationCorrect;
 
     public UserViewModel(UserRepository userRepository) {
         this.userRepository = userRepository;
         liveListUsers =new MutableLiveData<>();
-        singleLiveEvent=new SingleLiveEvent<>();
+        singleLiveEventErrorEmptyFields =new SingleLiveEvent<>();
+        singleLiveEventAllOperationCorrect=new SingleLiveEvent();
         liveListUsers = userRepository.getAllUsers();
     }
 
@@ -35,13 +37,18 @@ public class UserViewModel extends ViewModel{
     }
     public void insertUser(User user) {
         if ((user.getName()==null || user.getName().equals("")) || (user.getDescription()==null || user.getDescription().equals(""))){
-            singleLiveEvent.setValue("Los campos no pueden estar vacios");
+            singleLiveEventErrorEmptyFields.setValue("Los campos no pueden estar vacios");
             return;
         }
         userRepository.insertUser(user);
+        singleLiveEventAllOperationCorrect.call();
     }
 
-    public SingleLiveEvent<String> getCheckDataSingleEvemt() {
-        return singleLiveEvent;
+    public SingleLiveEvent<String> getCheckDataSingleEvent() {
+        return singleLiveEventErrorEmptyFields;
+    }
+
+    public SingleLiveEvent getSingleLiveEventAllOperationCorrect() {
+        return singleLiveEventAllOperationCorrect;
     }
 }

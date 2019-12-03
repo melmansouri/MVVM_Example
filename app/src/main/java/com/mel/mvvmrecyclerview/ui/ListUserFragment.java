@@ -1,6 +1,8 @@
 package com.mel.mvvmrecyclerview.ui;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -52,11 +54,13 @@ public class ListUserFragment extends Fragment/* implements android.view.ActionM
         ownViewModelFactory = new OwnViewModelFactory(userRepository);
         userViewModel = new ViewModelProvider(requireActivity(), ownViewModelFactory).get(UserViewModel.class);
         userList = new ArrayList<>();
+        Log.d("MiFragmento","onCreate");
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d("MiFragmento","onCreateView");
         View view = inflater.inflate(R.layout.fragment_list_user, container,false);
         ButterKnife.bind(this,view);
         initRecyclerList();
@@ -64,14 +68,72 @@ public class ListUserFragment extends Fragment/* implements android.view.ActionM
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Log.d("MiFragmento","onViewCreated");
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.d("MiFragmento","onActivityCreated");
+        //Le pasamos getViewLifecycleOwner para observar el ciclo de vida de la vista del fragment y  asi cuando se destruya la vista  tambien que se elimine el observador
+        //Ya que tras el ondestroyview volvera a entrar a onActivitycreated  y volvera a crear el observer
         userViewModel.getAllUsers().observe(getViewLifecycleOwner(), new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> newList) {
+                Log.d("FragmentV","Changed liveData");
                 adapter.addListUsers(newList);
             }
         });
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        Log.d("MiFragmento","onAttach");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d("MiFragmento","onStart");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("MiFragmento","onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("MiFragmento","onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("MiFragmento","onStop");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d("MiFragmento","onDetach");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d("MiFragmento","onDestroyView");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("MiFragmento","onDestroy");
     }
 
     private void initRecyclerList() {
